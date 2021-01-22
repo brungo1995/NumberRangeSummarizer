@@ -7,38 +7,117 @@ import java.util.stream.Stream;
 public class Summarizer implements  NumberRangeSummarizer{
 
     @Override
-    public Collection<Integer> collect(String input) {
+    public Collection<Integer> collect(String input) throws InvalidInputException {
         // FIRST THING MUST BE VALIDATION AND PREPARATION OF the INPUT
+        // IF WHAT COMES OUT OF THE VALIDATION FN IS NOT A PROPER INPUT RETURN AND PRINT THE MESSAGE
 //        if(!isValidInput()){
 //
 //        }
+        isValidInput(input);
+
 //         input = validateInput(input);
         // adding the numbers into a SET removes the need to check again for duplicates as SETS don't store duplicates
         Collection<Integer> numbers = new HashSet<>();
 
-        Stream.of(input.split(","))
-                .map(Integer::parseInt)
-                .sorted()
-                .forEach(numbers::add);
+//        Stream.of(input.split(","))
+//                .map(Integer::parseInt)
+//                .sorted()
+//                .forEach(numbers::add);
+
+//        removes duplicates without a map
+//        List<Integer> withoutDupes = Stream.of(input.split(",")).stream()
+//                .distinct()
+//                .collect(Collectors.toList());
 
         return  numbers;
+
     }
 
-    private boolean isValidInput(String string){
-        // check if string is made of numbers (if they are parsable)
-
-        // if there are special characters on the string you should remove then and only return the numeric items
-
-        // check if values are comma delimited
-
-        // check for decimal numbers
-
-        // empty input
+    private boolean isValidInput(String input) throws InvalidInputException {
 
         // if null
+        if(input == null)
+            throw new NullPointerException("User passed null input");
+
+        // empty input
+        if(input.isEmpty())
+            throw new InvalidInputException("User passed empty input");
+
+        //if not string
+        if(!(input instanceof  String)){
+            throw new NumberFormatException("User passed invalid input format. Input should be a String");
+        }
+
+        // check if input has special characters
+//        if(hasNonNumericValues(input)){
+//            throw new NumberFormatException("User passed non numeric values. Please only use numbers followed by commas");
+//        }
+
+        // remove all non numeric character exclucing commas
+        input = removeNonNumericCharacters(input);
+
+        // at this point there might also still be invalid commas or invalid formatd numbers
+        input = formatNumbers(input);
+
+        System.out.println(input);
+        // check if string is made of numbers (if they are parsable)
+        // parseInt can throw a NumberFormatException
+        // check if values are comma delimited
+        // check for decimal numbers
+
+
+
+
 
         return false;
     }
+
+    private String removeNonNumericCharacters(String input){
+        return  input.replaceAll("[^0-9,.]", "");
+    }
+
+    private String formatNumbers(String input){
+        List<Integer> list = new ArrayList<>();
+//              List<Integer> splitInputs = Stream.of(input.split(","))
+//                .filter(item -> !item.isEmpty()
+//                                && !item.isBlank()
+//                                && !item.contains("."))
+//                .map(String::trim)
+//                .map(Integer::parseInt)
+//                .collect(Collectors.toList());
+
+             String splitInputs = Stream.of(input.split(","))
+                .filter(item -> !item.isEmpty()
+                                && !item.isBlank()
+                                && !item.contains("."))
+                .map(String::trim)
+                .map(Integer::parseInt)
+                .map(Object::toString)
+                .collect(Collectors.joining(","));
+
+
+//        List<String> splitInputs = Stream.of(input.split(","))
+//                .map(String::trim)
+//                .collect(Collectors.toList());
+//
+//        for(String item: splitInputs){
+//
+//            if(item.isEmpty() || item.isBlank()){
+//                continue;
+//            }
+//
+//            if(item.contains(".")){
+//                continue;
+//            }
+//
+//            list.add(Integer.valueOf(item));
+//        }
+
+
+        return  splitInputs;
+//        return  list.toString();
+    }
+
 
     @Override
     public String summarizeCollection(Collection<Integer> input) {
