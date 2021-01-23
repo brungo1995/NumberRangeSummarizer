@@ -25,7 +25,7 @@ public interface NumberRangeSummarizer {
     Collection<Integer> collect(String input) throws InvalidInputException;
 
     //get the summarized string
-    String summarizeCollection(Collection<Integer> input);
+    String summarizeCollection(Collection<Integer> input) throws InvalidInputException;
 
 }
 

@@ -1,7 +1,8 @@
 package numberrangesummarizer;
 
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class Summarizer implements  NumberRangeSummarizer{
@@ -39,25 +40,13 @@ public class Summarizer implements  NumberRangeSummarizer{
 
     private String removeNonNumericCharacters(String input){
         // remove special all special characters and only leaves numeric values (including negative numbers)
-        // input = input.replaceAll("[^0-9,.]", "");
-//        input = input.replaceAll("[^\\d,.-]", "");
         input = input.replaceAll("[^\\d,-]", "");
 
-//        // removes spaces, fractional numbers, and blanks
-//        input = Stream.of(input.split(","))
-//                .filter(item -> !item.isEmpty()
-//                        && !item.isBlank()) //filter out decimal values
-//                .map(String::trim)
-//                .map(Integer::parseInt)
-//                .distinct() // removes duplicates
-//                .sorted()
-//                .map(Object::toString) //convert back to string
-//                .collect(Collectors.joining(",")); // join everything into a single string
         return input;
     }
 
     private Collection<Integer> sortNumbersAndCreateCollection(String formattedInput){
-        Collection<Integer> sortedNumbers = new ArrayList<Integer>();
+        Collection<Integer> sortedNumbers = new ArrayList<>();
 
         Stream.of(formattedInput.split(","))
                 .filter(item -> !item.isEmpty()
@@ -70,11 +59,35 @@ public class Summarizer implements  NumberRangeSummarizer{
 
                 return sortedNumbers;
     }
+
     @Override
-    public String summarizeCollection(Collection<Integer> input) {
-        String rangesFound = findRanges(input);
-        setRanges(rangesFound);
-        return getRanges();
+    public String summarizeCollection(Collection<Integer> input) throws InvalidInputException {
+
+        if(isCollectionInputValid(input)){
+            String rangesFound = findRanges(input);
+            setRanges(rangesFound);
+
+            return getRanges();
+        }
+
+        return  null;
+    }
+
+    private boolean isCollectionInputValid(Collection<Integer> input) throws InvalidInputException {
+        // if null
+        if(input == null)
+            throw new NullPointerException("Collection cannot be null");
+
+        // empty input
+        if(input.isEmpty())
+            throw new InvalidInputException("Collection cannot be empty");
+
+        //if not a collection
+        if(!(input instanceof  Collection)){
+            throw new NumberFormatException("Ony Collection<Integer> is allowed");
+        }
+
+        return true;
     }
 
     private String findRanges(Collection<Integer> masterColl){
@@ -85,12 +98,20 @@ public class Summarizer implements  NumberRangeSummarizer{
         int rangeEnd = 0;
 
         for (int i = 0; i < values.size(); i++) {
+
             int nextNum ;
-            int targetSum = values.get(i) + 1;
+            int targetSum = values.get(i)  + 1;
             int currentValue = values.get(i);
+            boolean isLast = i + 1 == values.size();
+
+
+            // if one of the values inside the collection is null
+            if(values.get(i) == null || !isLast && values.get(i + 1) == null){
+                throw new NullPointerException("One of the values in the collection is null");
+            }
 
             // Last item
-            nextNum = i + 1 == values.size() ? values.get(values.size() -1) : values.get(i + 1);
+            nextNum = isLast ? values.get(values.size() -1) : values.get(i + 1);
 
             if(nextNum == targetSum && isSequential){
                 continue;
@@ -115,7 +136,7 @@ public class Summarizer implements  NumberRangeSummarizer{
                         .concat(String.valueOf(rangeEnd ));
 
                 // if it is not the last item add "," to the output variable
-                if(!isLast(i + 1,  values.size()))
+                if(!isLast)
                     output = output.concat(", ");
 
                 rangeStart = 0;
@@ -130,17 +151,13 @@ public class Summarizer implements  NumberRangeSummarizer{
                 output = output.concat(String.valueOf(currentValue ));
 
                 // if it is not the last item add "," to the output variable
-                if(!isLast(i + 1,  values.size()))
+                if(!isLast)
                     output = output.concat(", ");
             }
 
         }
 
         return  output;
-    }
-
-    private boolean isLast(Integer currentIndex, Integer arrSize){
-        return  currentIndex == arrSize;
     }
 
     private String getRanges(){

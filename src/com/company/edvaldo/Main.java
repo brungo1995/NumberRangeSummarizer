@@ -3,6 +3,7 @@ package com.company.edvaldo;
 import numberrangesummarizer.NumberRangeSummarizer;
 import numberrangesummarizer.Summarizer;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class Main {
@@ -27,6 +28,7 @@ public class Main {
 //        String input = "  , , , ,,,1, 2, a,b,b,fggd,g,ergege,2......1,3.000,9";
 //        String input = " 1,1,2,3,5,5";
 //        String input = "";
+//        String input = "ABC";
 //        String input = null;
 //        var input = new Object();
 //        String input = "sgsfgs000000012,,,,        2.36,000000,98";
@@ -34,8 +36,12 @@ public class Main {
 //        String input = "1,3,4,5,002";
 
         try{
-            NumberRangeSummarizer summarizer = new Summarizer();
-            Collection<Integer> numbers = summarizer.collect(input);
+            Summarizer summarizer = new Summarizer();
+//            Collection<Integer> numbers = summarizer.collect(input);
+              Collection<Integer> numbers = null;
+//            Collection<Integer> numbers = new ArrayList<>();
+//            numbers.add(1);
+//            numbers.add(null);
             String result = summarizer.summarizeCollection(numbers);
             System.out.println(result);
         }catch (Exception ex){
