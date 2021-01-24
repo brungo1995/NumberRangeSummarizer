@@ -9,7 +9,7 @@ public class Summarizer implements  NumberRangeSummarizer{
 
     @Override
     public Collection<Integer> collect(String input) throws InvalidInputException {
-        Collection sortedNumbers;
+        Collection<Integer> sortedNumbers;
         input = validateInput(input);
         input = removeNonNumericCharacters(input);
         sortedNumbers = sortNumbersAndCreateCollection(input);
@@ -18,15 +18,12 @@ public class Summarizer implements  NumberRangeSummarizer{
     }
 
     private String validateInput(String input) throws InvalidInputException {
-        // if null
         if(input == null)
             throw new NullPointerException("Invalid input. Please do not pass a null string");
 
-        // empty input
         if(input.isEmpty())
             throw new InvalidInputException("Invalid input. Please do not pass an empty string");
 
-        //if not string
         if(!(input instanceof  String)){
             throw new NumberFormatException("Invalid input format. Input should be a String");
         }
@@ -35,7 +32,8 @@ public class Summarizer implements  NumberRangeSummarizer{
     }
 
     private String removeNonNumericCharacters(String input){
-        // remove special all special characters and only leaves numeric values (including negative numbers)
+        // remove special all special characters and
+        // leave numeric values (including negative numbers)
         input = input.replaceAll("[^\\d,.-]", "")
                 .trim()
                 .replaceAll(",-,",","); // in case there was a negative sign without a value
@@ -44,23 +42,18 @@ public class Summarizer implements  NumberRangeSummarizer{
     }
 
     private Collection<Integer> sortNumbersAndCreateCollection(String formattedInput){
-        Collection<Integer> sortedNumbers = new ArrayList<>();
 
-        Stream.of(formattedInput.split(","))
+        return Stream.of(formattedInput.split(","))
                 .filter(item -> isNumeric(item)
                                 && !item.isEmpty()
                                 && !item.isBlank()
                                 && !item.contains(".") //skip fractional
-                                && !item.equals("-")
-
-                ) //filter out decimal values
+                                && !item.equals("-"))
                 .map(String::trim)
                 .map(Integer::parseInt)
                 .distinct() // removes duplicates
                 .sorted()
-                .forEach(sortedNumbers::add);
-
-                return sortedNumbers;
+                .collect(Collectors.toList());
     }
 
     public static boolean isNumeric(String str) {
