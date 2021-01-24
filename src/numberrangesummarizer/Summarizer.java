@@ -1,6 +1,7 @@
 package numberrangesummarizer;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Summarizer implements  NumberRangeSummarizer{
@@ -73,15 +74,19 @@ public class Summarizer implements  NumberRangeSummarizer{
 
     @Override
     public String summarizeCollection(Collection<Integer> input) throws InvalidInputException {
+        input = input
+                .stream()
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
 
         if(isCollectionInputValid(input)){
             String rangesFound = findRanges(input);
             setRanges(rangesFound);
-
             return getRanges();
+        }else {
+            throw   new InvalidInputException("Invalid Input. Please only use numbers in the collection");
         }
-
-        return  null;
     }
 
     private boolean isCollectionInputValid(Collection<Integer> input) throws InvalidInputException {
@@ -98,10 +103,12 @@ public class Summarizer implements  NumberRangeSummarizer{
             throw new NumberFormatException("Ony Collection<Integer> is allowed");
         }
 
+        // check if all items are numbers
+
         return true;
     }
 
-    private String findRanges(Collection<Integer> masterColl){
+    private String findRanges(Collection<Integer> masterColl) throws InvalidInputException{
         ArrayList<Integer> values= new ArrayList<>(masterColl);
         String output ="";
         boolean isSequential = false;
@@ -109,17 +116,18 @@ public class Summarizer implements  NumberRangeSummarizer{
         int rangeEnd = 0;
 
         for (int i = 0; i < values.size(); i++) {
-
-            int nextNum ;
-            int targetSum = values.get(i)  + 1;
-            int currentValue = values.get(i);
             boolean isLast = i + 1 == values.size();
-
 
             // if one of the values inside the collection is null
             if(values.get(i) == null || !isLast && values.get(i + 1) == null){
                 throw new NullPointerException("One of the values in the collection is null");
             }
+
+            int nextNum ;
+            int targetSum = values.get(i)  + 1;
+            int currentValue = values.get(i);
+
+
 
             // Last item
             nextNum = isLast ? values.get(values.size() -1) : values.get(i + 1);

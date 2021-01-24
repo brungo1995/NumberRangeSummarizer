@@ -1,4 +1,6 @@
 package numberrangesummarizer;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
 public class Main {
@@ -31,16 +33,17 @@ public class Main {
 //        String input = "00000000001,20,......6,0.8,98";
 //        String input = "1,3,4,5,002";
 //        String input = "-1.3, -4, 0.999, 1, 4, -3, 0, 2, -2.5";
-        String input = "1..*1, !-3-, @3(),-, #-2 /  /,  $[ 0] ,  % - 1 % , ^2&, nul, ABCD,,,,,";
+//        String input = "1..*1, !-3-, @3(),-, #-2 /  /,  $[ 0] ,  % - 1 % , ^2&, nul, ABCD,,,,,";
 //        String input = "-1.3, -4, 0.999, 1, 4, -3, 0, 2, -2.5";
 
         try{
             Summarizer summarizer = new Summarizer();
-            Collection<Integer> numbers = summarizer.collect(input);
+//            Collection<Integer> numbers = summarizer.collect(input);
 //              Collection<Integer> numbers = null;
 //            Collection<Integer> numbers = new ArrayList<>();
 //            numbers.add(1);
 //            numbers.add(null);
+            Collection<Integer> numbers = Arrays.asList(-6, -9, -1, -5, -2, -7, -4, -3, -10, -8);
             String result = summarizer.summarizeCollection(numbers);
             System.out.println(result);
         }catch (Exception ex){

@@ -3,6 +3,8 @@ package numberrangesummarizer;
 import org.junit.Rule;
 import org.junit.jupiter.api.Test;
 import org.junit.rules.ExpectedException;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.jupiter.api.Assertions.*;
@@ -57,43 +59,6 @@ public class SummarizerTest {
         }
 
         assertTrue(event instanceof InvalidInputException);
-        assertEquals(expected, actual);
-    }
-
-
-    /**
-     * When the function collect is called with only negatives numbers,
-     * the result should be a collection, that sorts the numbers from lowest to highest
-     */
-    @Test
-    public void testWhenStringInputIsOnlyNegateNumbers() throws InvalidInputException {
-        Collection<Integer> expected = Arrays.asList(-10, -9, -8, -7, -6,-5, -4, -3, -2, -1);
-        Summarizer summarizer = new Summarizer();
-        Collection<Integer>  actual = summarizer.collect("-6, -9, -1, -5, -2, -7, -4, -3, -10, -8");
-        assertEquals(expected, actual);
-    }
-
-    /**
-     * When the function collect is called with only positive numbers,
-     * the result should be a collection, that sorts the numbers from lowest to highest
-     */
-    @Test
-    public void testWhenStringInputIsOnlyPositiveNumbers() throws InvalidInputException {
-        Collection<Integer> expected = Arrays.asList(1,3,6,7,8,12,13,14,15,21,22,23,24,31);
-        Summarizer summarizer = new Summarizer();
-        Collection<Integer>  actual = summarizer.collect("31,3,8,24,1,23,7,22,6,8,21,15,12,14,13");
-        assertEquals(expected, actual);
-    }
-
-    /**
-     * When the function collect is called with negative and positive numbers,
-     * the result should be a collection, that sorts the numbers from lowest to highest
-     */
-    @Test
-    public void testWhenStringInputHasNegativeAndPositiveNumbers() throws InvalidInputException {
-        Collection<Integer> expected = Arrays.asList(-10, -9, -8, -7, -6,-5, -4, -3, -2, -1,0,1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-        Summarizer summarizer = new Summarizer();
-        Collection<Integer>  actual = summarizer.collect("10, 1, -4, -3, 8, 5,  -5, -2, -7, 4, 3, 9,0, 2, 7, 6,-6, -9, -1, -10, -8");
         assertEquals(expected, actual);
     }
 
@@ -166,17 +131,205 @@ public class SummarizerTest {
         assertEquals(expected, actual);
     }
 
+    /**
+     * When the function collect is called with only negatives numbers,
+     * the result should be a collection, that sorts the numbers from lowest to highest
+     */
+    @Test
+    public void testWhenStringInputIsOnlyNegateNumbers() throws InvalidInputException {
+        Collection<Integer> expected = Arrays.asList(-10, -9, -8, -7, -6,-5, -4, -3, -2, -1);
+        Summarizer summarizer = new Summarizer();
+        Collection<Integer>  actual = summarizer.collect("-6, -9, -1, -5, -2, -7, -4, -3, -10, -8");
+        assertEquals(expected, actual);
+    }
+
+    /**
+     * When the function collect is called with only positive numbers,
+     * the result should be a collection, that sorts the numbers from lowest to highest
+     */
+    @Test
+    public void testWhenStringInputIsOnlyPositiveNumbers() throws InvalidInputException {
+        Collection<Integer> expected = Arrays.asList(1,3,6,7,8,12,13,14,15,21,22,23,24,31);
+        Summarizer summarizer = new Summarizer();
+        Collection<Integer>  actual = summarizer.collect("31,3,8,24,1,23,7,22,6,8,21,15,12,14,13");
+        assertEquals(expected, actual);
+    }
+
+    /**
+     * When the function collect is called with negative and positive numbers,
+     * the result should be a collection, that sorts the numbers from lowest to highest
+     */
+    @Test
+    public void testWhenStringInputHasNegativeAndPositiveNumbers() throws InvalidInputException {
+        Collection<Integer> expected = Arrays.asList(-10, -9, -8, -7, -6,-5, -4, -3, -2, -1,0,1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        Summarizer summarizer = new Summarizer();
+        Collection<Integer>  actual = summarizer.collect("10, 1, -4, -3, 8, 5,  -5, -2, -7, 4, 3, 9,0, 2, 7, 6,-6, -9, -1, -10, -8");
+        assertEquals(expected, actual);
+    }
+
 
 //    summarizeCollection
 
-    
+    /**
+     * When the function summarizeCollection is called with a null value,
+     * the validation method throws a NullPointerException,
+     * which the function caller should handle
+     */
+    @Test
+    public void testWhenSummarizeCollectionIsCalledWithNull()  {
+        Throwable event = null;
+        String expected = "Collection cannot be null";
+        String actual = "";
 
-//    Collect and summarizeCollection tests
-    // TODO: 2021/01/24  test with not properly fomated numbers ",,,,,*(*& 012"
-    // TODO: 2021/01/24 test when some numbers inside collection is are null
-    // TODO: 2021/01/24 with decimal numbers
-    // TODO: 2021/01/24 if function collect is called
-    // TODO: 2021/01/24 if  summarize is called
-    // TODO: 2021/01/24 duplicates negative and posive
+        try {
+            Summarizer summarizer = new Summarizer();
+            summarizer.summarizeCollection(null);
+
+        } catch (Throwable ex) {
+            event = ex;
+            actual = event.getMessage();
+        }
+
+        assertTrue(event instanceof NullPointerException);
+        assertEquals(expected, actual);
+    }
+
+
+    /**
+     * When the function summarizeCollection is called with an Empty Collection,
+     * the validation method throws a InvalidInputException,
+     * which the function caller should handle
+     */
+    @Test
+    public void testWhenSummarizeCollectionIsCalledWithAnEmptyCollection()  {
+        Throwable event = null;
+        String expected = "Collection cannot be empty";
+        String actual = "";
+
+        try {
+            Summarizer summarizer = new Summarizer();
+            Collection<Integer> input = Arrays.asList();
+            summarizer.summarizeCollection(input);
+
+        } catch (Throwable ex) {
+            event = ex;
+            actual = event.getMessage();
+        }
+
+        assertTrue(event instanceof InvalidInputException);
+        assertEquals(expected, actual);
+    }
+
+
+    /**
+     * When the function summarizeCollection is called with a Collection
+     * which has one or more values null = null
+     * the validation method throws a NullPointerException
+     * which the function caller should handle
+     */
+    @Test
+    public void testWhenSummarizeCollectionIsCalledWithOneNullValue()  {
+        Throwable event = null;
+        String expected = "One of the values in the collection is null";
+        String actual = "";
+
+        try {
+            Summarizer summarizer = new Summarizer();
+            Collection<Integer> input = new ArrayList<>();
+            input.add(1);
+            input.add(2);
+            input.add(null);
+            input.add(3);
+
+            summarizer.summarizeCollection(input);
+
+        } catch (Throwable ex) {
+            event = ex;
+            actual = event.getMessage();
+        }
+
+        assertTrue(event instanceof NullPointerException);
+        assertEquals(expected, actual);
+    }
+
+    /**
+     * When the function summarizeCollection is called with only negatives numbers,
+     * the result should be a string with only negative ranges (ascending order)
+     */
+    @Test
+    public void testWhenSummarizeCollectionIsCalledOnlyWithNegativeValues() throws InvalidInputException {
+        String expected = "-10, -8--5, -2--1";
+        Collection<Integer> input = Arrays.asList(-6, -1, -5, -2, -7,  -10, -8);
+        Summarizer summarizer = new Summarizer();
+        String  actual = summarizer.summarizeCollection(input);
+        assertEquals(expected, actual);
+    }
+
+    /**
+     * When the function summarizeCollection is called with only positive numbers,
+     * the result should be a string with only positive ranges (ascending order)
+     */
+    @Test
+    public void testWhenSummarizeCollectionIsCalledOnlyWithPositiveValues() throws InvalidInputException {
+        String expected = "1, 3, 6-8, 12-15, 21-24, 31";
+        Collection<Integer> input = Arrays.asList(1,3,6,7,8,12,13,14,15,21,22,23,24,31);
+        Summarizer summarizer = new Summarizer();
+        String  actual = summarizer.summarizeCollection(input);
+        assertEquals(expected, actual);
+    }
+
+    /**
+     * When the function summarizeCollection is called with  duplicate numbers,
+     * the result should be a range string without duplicates
+     */
+    @Test
+    public void testWhenSummarizeCollectionIsCalledWithDuplicateValues() throws InvalidInputException {
+        String expected = "2-3, 5-6, 10, 15-16, 31-32";
+        Collection<Integer> input = Arrays.asList(10, 15, 5, 10, 16, 31, 6, 15,5, 32, 3 , 3, 2);
+        Summarizer summarizer = new Summarizer();
+        String  actual = summarizer.summarizeCollection(input);
+        assertEquals(expected, actual);
+    }
+
+    /**
+     * When the function summarizeCollection is called with positive and negative numbers,
+     * the result should be a range starting with negatives and then positive ranges
+     */
+    @Test
+    public void testWhenSummarizeCollectionIsCalledWithPositiveAndNegateValues() throws InvalidInputException {
+        String expected = "-8--6, -4, -2--1, 2-3, 5-7";
+        Collection<Integer> input = Arrays.asList(-8,5, -1,7, -4, -7,3, 6,2, -2,-6);
+        Summarizer summarizer = new Summarizer();
+        String  actual = summarizer.summarizeCollection(input);
+        assertEquals(expected, actual);
+    }
+
+    /**
+     * When the function summarizeCollection is called with a unic range from negative to positives,
+     * the result should be a range starting with negatives and then positive ranges
+     */
+    @Test
+    public void testWhenSummarizeCollectionIsCalledWithUnicRange() throws InvalidInputException {
+        String expected = "-2-5";
+        Collection<Integer> input = Arrays.asList(5, 1, -1, 0, 2, -2, 4, 3);
+        Summarizer summarizer = new Summarizer();
+        String  actual = summarizer.summarizeCollection(input);
+        assertEquals(expected, actual);
+    }
+
+
+    /**
+     * Both functions collect and summarizeCollection must be called when creating
+     * a collection and convert to a range string
+     * The result is expected to be sorted ranges
+     */
+    @Test
+    public void testThatCollectAndSummarizeCollectionAreIsCalled() throws InvalidInputException {
+        String expected = "1, 3, 6-8, 12-15, 21-24, 31";
+        Summarizer summarizer = new Summarizer();
+        Collection<Integer> input = summarizer.collect("1,3,6,7,8,12,13,14,15,21,22,23,24,31");
+        String  actual = summarizer.summarizeCollection(input);
+        assertEquals(expected, actual);
+    }
 
 }
