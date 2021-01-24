@@ -1,15 +1,11 @@
-package com.company.edvaldo;
-
-import numberrangesummarizer.NumberRangeSummarizer;
-import numberrangesummarizer.Summarizer;
-
-import java.util.ArrayList;
+package numberrangesummarizer;
 import java.util.Collection;
 
 public class Main {
 
     public static void main(String[] args) {
-        String input = "1,3,6,7,8,12,13,14,15,21,22,23,24,31";
+//        String input = "1,3,6,7,8,12,13,14,15,21,22,23,24,31";
+//        String input = "1,3,6,7,8,12,13,14,15,21,22,23,24,31,30,29,";
 //        String input = "1,3,6,7,8,12,13,14,-20,15,21,22,23,24,31,-1,-2,-3,0";
 //        String input = "1,3,6,7,8,12,13,14,-20,15,21,22,23,24,31,-1,-2,-3,0";
 //        String input = "-20,-1,-2,-3,0,5";
@@ -34,11 +30,14 @@ public class Main {
 //        String input = "sgsfgs000000012,,,,        2.36,000000,98";
 //        String input = "00000000001,20,......6,0.8,98";
 //        String input = "1,3,4,5,002";
+//        String input = "-1.3, -4, 0.999, 1, 4, -3, 0, 2, -2.5";
+        String input = "1..*1, !-3-, @3(),-, #-2 /  /,  $[ 0] ,  % - 1 % , ^2&, nul, ABCD,,,,,";
+//        String input = "-1.3, -4, 0.999, 1, 4, -3, 0, 2, -2.5";
 
         try{
             Summarizer summarizer = new Summarizer();
-//            Collection<Integer> numbers = summarizer.collect(input);
-              Collection<Integer> numbers = null;
+            Collection<Integer> numbers = summarizer.collect(input);
+//              Collection<Integer> numbers = null;
 //            Collection<Integer> numbers = new ArrayList<>();
 //            numbers.add(1);
 //            numbers.add(null);

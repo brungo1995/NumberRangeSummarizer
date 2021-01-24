@@ -1,8 +1,6 @@
 package numberrangesummarizer;
 
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class Summarizer implements  NumberRangeSummarizer{
@@ -21,26 +19,25 @@ public class Summarizer implements  NumberRangeSummarizer{
     private String validateInput(String input) throws InvalidInputException {
         // if null
         if(input == null)
-            throw new NullPointerException("User passed null input");
+            throw new NullPointerException("Invalid input. Please do not pass a null string");
 
         // empty input
         if(input.isEmpty())
-            throw new InvalidInputException("User passed empty input");
+            throw new InvalidInputException("Invalid input. Please do not pass an empty string");
 
         //if not string
         if(!(input instanceof  String)){
-            throw new NumberFormatException("User passed invalid input format. Input should be a String");
+            throw new NumberFormatException("Invalid input format. Input should be a String");
         }
-
-        // remove all non numeric character excluding commas
-//        input = removeNonNumericCharacters(input);
 
         return input;
     }
 
     private String removeNonNumericCharacters(String input){
         // remove special all special characters and only leaves numeric values (including negative numbers)
-        input = input.replaceAll("[^\\d,-]", "");
+        input = input.replaceAll("[^\\d,.-]", "")
+                .trim()
+                .replaceAll(",-,",","); // in case there was a negative sign without a value
 
         return input;
     }
@@ -49,8 +46,13 @@ public class Summarizer implements  NumberRangeSummarizer{
         Collection<Integer> sortedNumbers = new ArrayList<>();
 
         Stream.of(formattedInput.split(","))
-                .filter(item -> !item.isEmpty()
-                        && !item.isBlank()) //filter out decimal values
+                .filter(item -> isNumeric(item)
+                                && !item.isEmpty()
+                                && !item.isBlank()
+                                && !item.contains(".") //skip fractional
+                                && !item.equals("-")
+
+                ) //filter out decimal values
                 .map(String::trim)
                 .map(Integer::parseInt)
                 .distinct() // removes duplicates
@@ -58,6 +60,15 @@ public class Summarizer implements  NumberRangeSummarizer{
                 .forEach(sortedNumbers::add);
 
                 return sortedNumbers;
+    }
+
+    public static boolean isNumeric(String str) {
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch(NumberFormatException e){
+            return false;
+        }
     }
 
     @Override
