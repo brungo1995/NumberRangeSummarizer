@@ -1,17 +1,11 @@
 package numberrangesummarizer;
 
-import org.junit.Rule;
 import org.junit.jupiter.api.Test;
-import org.junit.rules.ExpectedException;
-
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CommaDelimitedSummarizerTest {
-
-    @Rule
-    public final ExpectedException exception = ExpectedException.none();
 
     @Test
     public void testCollectWhenStringInputIsNull()  {
