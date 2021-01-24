@@ -74,13 +74,14 @@ public class Summarizer implements  NumberRangeSummarizer{
 
     @Override
     public String summarizeCollection(Collection<Integer> input) throws InvalidInputException {
-        input = input
-                .stream()
-                .distinct()
-                .sorted()
-                .collect(Collectors.toList());
 
         if(isCollectionInputValid(input)){
+            input = input.stream()
+                    .filter(number -> number != null && isNumeric(Integer.toString(number)))
+                    .distinct()
+                    .sorted()
+                    .collect(Collectors.toList());
+
             String rangesFound = findRanges(input);
             setRanges(rangesFound);
             return getRanges();

@@ -224,31 +224,15 @@ public class SummarizerTest {
     /**
      * When the function summarizeCollection is called with a Collection
      * which has one or more values null = null
-     * the validation method throws a NullPointerException
-     * which the function caller should handle
+     * all the null numbers should be ignored and only use the items with values
      */
     @Test
-    public void testWhenSummarizeCollectionIsCalledWithOneNullValue()  {
-        Throwable event = null;
-        String expected = "One of the values in the collection is null";
-        String actual = "";
+    public void testWhenSummarizeCollectionIsCalledWithNullValues() throws InvalidInputException {
 
-        try {
-            Summarizer summarizer = new Summarizer();
-            Collection<Integer> input = new ArrayList<>();
-            input.add(1);
-            input.add(2);
-            input.add(null);
-            input.add(3);
-
-            summarizer.summarizeCollection(input);
-
-        } catch (Throwable ex) {
-            event = ex;
-            actual = event.getMessage();
-        }
-
-        assertTrue(event instanceof NullPointerException);
+        String expected = "0, 2-3, 5-6";
+        Collection<Integer> input = Arrays.asList(null, 0, 3, 5,null, 2, 6,  null);
+        Summarizer summarizer = new Summarizer();
+        String  actual = summarizer.summarizeCollection(input);
         assertEquals(expected, actual);
     }
 
