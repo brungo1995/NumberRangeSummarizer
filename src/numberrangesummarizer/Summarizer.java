@@ -13,7 +13,6 @@ public class Summarizer implements  NumberRangeSummarizer{
         input = validateInput(input);
         input = removeNonNumericCharacters(input);
         sortedNumbers = sortNumbersAndCreateCollection(input);
-
         return  sortedNumbers;
     }
 
@@ -23,10 +22,6 @@ public class Summarizer implements  NumberRangeSummarizer{
 
         if(input.isEmpty())
             throw new InvalidInputException("Invalid input. Please do not pass an empty string");
-
-        if(!(input instanceof  String)){
-            throw new NumberFormatException("Invalid input format. Input should be a String");
-        }
 
         return input;
     }
@@ -67,42 +62,27 @@ public class Summarizer implements  NumberRangeSummarizer{
 
     @Override
     public String summarizeCollection(Collection<Integer> input) throws InvalidInputException {
-
-        if(isCollectionInputValid(input)){
-            input = input.stream()
-                    .filter(number -> number != null && isNumeric(Integer.toString(number)))
-                    .distinct()
-                    .sorted()
-                    .collect(Collectors.toList());
-
-            String rangesFound = findRanges(input);
-            setRanges(rangesFound);
-            return getRanges();
-        }else {
-            throw   new InvalidInputException("Invalid Input. Please only use numbers in the collection");
-        }
+        input = validateAndCleanCollectionInput(input);
+        String rangesFound = findRanges(input);
+        setRanges(rangesFound);
+        return getRanges();
     }
 
-    private boolean isCollectionInputValid(Collection<Integer> input) throws InvalidInputException {
-        // if null
+    private Collection<Integer> validateAndCleanCollectionInput(Collection<Integer> input) throws InvalidInputException {
         if(input == null)
             throw new NullPointerException("Collection cannot be null");
 
-        // empty input
         if(input.isEmpty())
             throw new InvalidInputException("Collection cannot be empty");
 
-        //if not a collection
-        if(!(input instanceof  Collection)){
-            throw new NumberFormatException("Ony Collection<Integer> is allowed");
-        }
-
-        // check if all items are numbers
-
-        return true;
+        return input.stream()
+                .filter(number -> number != null && isNumeric(Integer.toString(number)))
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
     }
 
-    private String findRanges(Collection<Integer> masterColl) throws InvalidInputException{
+    private String findRanges(Collection<Integer> masterColl){
         ArrayList<Integer> values= new ArrayList<>(masterColl);
         String output ="";
         boolean isSequential = false;
@@ -112,16 +92,9 @@ public class Summarizer implements  NumberRangeSummarizer{
         for (int i = 0; i < values.size(); i++) {
             boolean isLast = i + 1 == values.size();
 
-            // if one of the values inside the collection is null
-            if(values.get(i) == null || !isLast && values.get(i + 1) == null){
-                throw new NullPointerException("One of the values in the collection is null");
-            }
-
             int nextNum ;
             int targetSum = values.get(i)  + 1;
             int currentValue = values.get(i);
-
-
 
             // Last item
             nextNum = isLast ? values.get(values.size() -1) : values.get(i + 1);
