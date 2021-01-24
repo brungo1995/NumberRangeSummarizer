@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class Summarizer implements  NumberRangeSummarizer{
+public class CommaDelimitedSummarizer implements  NumberRangeSummarizer{
     private String ranges = "";
 
     @Override
