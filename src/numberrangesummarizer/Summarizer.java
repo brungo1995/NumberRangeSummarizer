@@ -27,11 +27,9 @@ public class Summarizer implements  NumberRangeSummarizer{
     }
 
     private String removeNonNumericCharacters(String input){
-        // remove special all special characters and
-        // leave numeric values (including negative numbers)
         input = input.replaceAll("[^\\d,.-]", "")
                 .trim()
-                .replaceAll(",-,",","); // in case there was a negative sign without a value
+                .replaceAll(",-,",",");
 
         return input;
     }
@@ -42,11 +40,11 @@ public class Summarizer implements  NumberRangeSummarizer{
                 .filter(item -> isNumeric(item)
                                 && !item.isEmpty()
                                 && !item.isBlank()
-                                && !item.contains(".") //skip fractional
+                                && !item.contains(".")
                                 && !item.equals("-"))
                 .map(String::trim)
                 .map(Integer::parseInt)
-                .distinct() // removes duplicates
+                .distinct()
                 .sorted()
                 .collect(Collectors.toList());
     }
@@ -96,47 +94,37 @@ public class Summarizer implements  NumberRangeSummarizer{
             int targetSum = values.get(i)  + 1;
             int currentValue = values.get(i);
 
-            // Last item
             nextNum = isLast ? values.get(values.size() -1) : values.get(i + 1);
 
             if(nextNum == targetSum && isSequential){
                 continue;
             }
 
-            //add range start and the next sum is sequential
             if (nextNum == targetSum && !isSequential){
                 rangeStart = currentValue;
                 isSequential = true;
                 continue;
             }
 
-            // reached range end, next number is not sequential
             if(nextNum != targetSum && isSequential){
-                //update the value of the map based on the key which is the start range
                 isSequential = false;
                 rangeEnd = currentValue;
 
-                // add the range to the output variable
                 output = output.concat(String.valueOf(rangeStart ))
                         .concat("-")
                         .concat(String.valueOf(rangeEnd ));
 
-                // if it is not the last item add "," to the output variable
                 if(!isLast)
                     output = output.concat(", ");
 
                 rangeStart = 0;
-                rangeEnd = 0;
 
                 continue;
             }
 
-            // in this case the next number is not sequential
             if(nextNum != targetSum && !isSequential){
-                // in this case we don't have a range start neither the sum != current
                 output = output.concat(String.valueOf(currentValue ));
 
-                // if it is not the last item add "," to the output variable
                 if(!isLast)
                     output = output.concat(", ");
             }
