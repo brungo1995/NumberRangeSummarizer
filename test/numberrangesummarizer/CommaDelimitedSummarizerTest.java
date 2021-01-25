@@ -197,13 +197,35 @@ public class CommaDelimitedSummarizerTest {
     }
 
     @Test
-    public void testSummarizeCollectionWhenIsCalledWithUnicRange() throws InvalidInputException {
+    public void testSummarizeCollectionWhenIsCalledWithASingleRange() throws InvalidInputException {
         String expected = "-2-5";
         Collection<Integer> input = Arrays.asList(5, 1, -1, 0, 2, -2, 4, 3);
         CommaDelimitedSummarizer commaDelimitedSummarizer = new CommaDelimitedSummarizer();
         String  actual = commaDelimitedSummarizer.summarizeCollection(input);
         assertEquals(expected, actual);
     }
+
+    @Test
+    public void testSummarizeCollectionWhenIsCalledWithBigNumbers() throws InvalidInputException {
+        String expected = "10000-10001, 25000-25001, 250000-250001, 366000-366001, 400536-400537, 9200500-9200501, 1000000000-1000000001";
+        Collection<Integer> input = Arrays.asList(
+                10000, 250000, 9200500, 25000, 366000, 400536, 1000000000, 250001,
+                9200501, 366001, 400537, 1000000001, 10001, 25001);
+        CommaDelimitedSummarizer commaDelimitedSummarizer = new CommaDelimitedSummarizer();
+        String  actual = commaDelimitedSummarizer.summarizeCollection(input);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testSummarizeCollectionWhenIsCalledWithUnOrderedNumbers() throws InvalidInputException {
+        String expected = "1, 3, 6-8, 12-15, 21-24, 31";
+        Collection<Integer> input = Arrays.asList(
+                 31, 15, 1, 13, 6, 3, 21, 12, 7, 24, 14, 8,22, 23);
+        CommaDelimitedSummarizer commaDelimitedSummarizer = new CommaDelimitedSummarizer();
+        String  actual = commaDelimitedSummarizer.summarizeCollection(input);
+        assertEquals(expected, actual);
+    }
+
 
     @Test
     public void testThatCollectAndSummarizeCollectionAreIsCalled() throws InvalidInputException {
